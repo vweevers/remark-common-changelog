@@ -4,7 +4,7 @@ const is = require('unist-util-is')
 const u = require('unist-builder')
 const semver = require('semver')
 const isSorted = require('is-array-sorted')
-const github = require('github-from-package')
+const Githost = require('find-githost')
 const closest = require('read-closest-package')
 const path = require('path')
 const execFileSync = require('child_process').execFileSync
@@ -40,17 +40,14 @@ module.exports = function attacher (opts) {
 
     const cwd = path.resolve(opts.cwd || file.cwd)
     const pkg = lazyPkg(cwd, opts.pkg)
-    const repository = repo(opts.repository || pkg().repository)
+    const githubUrl = repo(cwd, opts, pkg)
     const tags = gitTags(cwd)
     const currentVersion = opts.version || pkg().version || lastTagVersion(tags) || '0.0.0'
 
-    if (!repository) {
-      throw new Error('No repository url found in package.json or options')
-    } else if (semver.valid(currentVersion) !== currentVersion) {
+    if (semver.valid(currentVersion) !== currentVersion) {
       throw new Error('No valid version found in package.json or options')
     }
 
-    const githubUrl = github2(repository)
     const changelog = Changelog(parse, root.children)
     const versions = new Set()
 
@@ -347,10 +344,6 @@ function tagDate (cwd, tag) {
   }
 }
 
-function repo (repository) {
-  return (repository && repository.url) || repository
-}
-
 function lastTagVersion (tags) {
   const sorted = tags
     .filter(t => t.startsWith('v'))
@@ -359,13 +352,17 @@ function lastTagVersion (tags) {
   return sorted.length ? sorted[0].slice(1) : null
 }
 
-// TODO: there's a package that does this, can't find it
-function github2 (repository) {
-  if (/^[a-z0-9-_]+\/[a-z0-9-_]+$/i.test(repository)) {
-    return 'https://github.com/' + repository
-  } else {
-    return github({ repository })
+function repo (cwd, options, pkg) {
+  if (options.repository) {
+    return Githost.fromUrl(options.repository, { committish: false }).homepage()
   }
+
+  const host = (
+    Githost.fromPkg(pkg(), { committish: false, optional: true }) ||
+    Githost.fromGit(cwd, { committish: false })
+  )
+
+  return host.homepage()
 }
 
 function isMapSorted (map, comparator) {
