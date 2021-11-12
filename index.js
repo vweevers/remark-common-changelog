@@ -88,24 +88,17 @@ module.exports = function attacher (opts) {
       const url = oldUrl || defaultReleaseUrl(githubUrl, tags, version, previousVersion)
       const isFirstRelease = i === changelog.children.length - 1
 
-      if (version === 'unreleased' && !url) {
-        continue
-      }
-
       if (fix) {
         const label = identifier
-        const referenceType = version === 'unreleased' ? 'full' : 'shortcut'
+        const referenceType = 'shortcut'
 
         heading.children = [u('linkReference', { identifier, label, referenceType }, [
-          u('text', version === 'unreleased' ? 'Unreleased' : version)
+          u('text', version)
         ])]
 
-        if (version !== 'unreleased') {
-          heading.children.push(u('text', ` - ${date || 'YYYY-MM-DD'}`))
-        }
-
+        heading.children.push(u('text', ` - ${date || 'YYYY-MM-DD'}`))
         changelog.definitions.set(identifier, u('definition', { identifier, label, url, title: null }))
-      } else if (!isFirstRelease && version !== 'unreleased') {
+      } else if (!isFirstRelease) {
         if (!linkType) {
           warn('Release version must have a link', heading, 'release-version-link')
         } else if (linkType !== 'linkReference') {
@@ -145,10 +138,7 @@ module.exports = function attacher (opts) {
         const lastRelease = changelog.children[0]
         const from = (lastRelease && lastRelease.version) || currentVersion
 
-        if (from === 'unreleased') { // TODO
-          warn('Bumping Unreleased is not implemented yet', root, 'add-new-release')
-          return
-        } else if (!from) {
+        if (!from) {
           warn('No version found to start from', root, 'add-new-release')
           return
         }
@@ -176,7 +166,7 @@ module.exports = function attacher (opts) {
         warn('Release must start with second-level heading', heading, 'release-heading-depth')
         return
       } else if (!release.parseable) {
-        warn('Release heading must be "Unreleased" or have the format "<version> - <date>"', heading, 'release-heading')
+        warn('Release heading must have the format "<version> - <date>"', heading, 'release-heading')
         return
       }
 
@@ -185,25 +175,19 @@ module.exports = function attacher (opts) {
           warn('Release version must be unique', heading, 'unique-release')
         }
 
-        if (!fix && release.version === 'unreleased' && release.title !== 'Unreleased') {
-          warn('Release heading must be "Unreleased"', heading, 'release-heading')
-        }
-
         versions.add(release.version)
       }
 
-      if (release.version !== 'unreleased') {
-        if (!release.version) {
-          warn('Release must have a version', heading, 'release-version')
-        } else if (semver.valid(release.version) !== release.version) {
-          warn('Release version must be semver-valid', heading, 'release-version')
-        }
+      if (!release.version) {
+        warn('Release must have a version', heading, 'release-version')
+      } else if (semver.valid(release.version) !== release.version) {
+        warn('Release version must be semver-valid', heading, 'release-version')
+      }
 
-        if (!release.date) {
-          warn('Release must have date', heading, 'release-date')
-        } else if (!/^\d{4}-\d{2}-\d{2}$/.test(release.date)) {
-          warn('Release date must have format YYYY-MM-DD', heading, 'release-date')
-        }
+      if (!release.date) {
+        warn('Release must have date', heading, 'release-date')
+      } else if (!/^\d{4}-\d{2}-\d{2}$/.test(release.date)) {
+        warn('Release date must have format YYYY-MM-DD', heading, 'release-date')
       }
 
       if (release.isEmpty()) {
@@ -226,7 +210,7 @@ module.exports = function attacher (opts) {
         const gt = forgivingTag(previousVersion, tags)
         const opts = { cwd, gt, limit: 100, submodules }
 
-        if (version === 'unreleased' || isNewVersion(version, previousVersion)) {
+        if (isNewVersion(version, previousVersion)) {
           opts.lte = 'HEAD'
         } else {
           opts.lt = forgivingTag(version, tags)
@@ -315,8 +299,6 @@ function cmpRelease (a, b) {
 
 function cmpVersion (a, b) {
   if (a === b) return 0
-  if (a === 'unreleased') return -1
-  if (b === 'unreleased') return 1
 
   let av = semver.valid(a)
   let bv = semver.valid(b)
@@ -331,11 +313,11 @@ function cmpVersion (a, b) {
 // TODO: https://github.com/vweevers/hallmark/issues/82
 function defaultReleaseUrl (githubUrl, tags, version, prevVersion) {
   if (!prevVersion) {
-    return version === 'unreleased' ? null : `${githubUrl}/releases/tag/${forgivingTag(`v${version}`, tags)}`
+    return `${githubUrl}/releases/tag/${forgivingTag(`v${version}`, tags)}`
   }
 
   const left = forgivingTag(`v${prevVersion}`, tags)
-  const right = version === 'unreleased' ? 'HEAD' : forgivingTag(`v${version}`, tags)
+  const right = forgivingTag(`v${version}`, tags)
 
   return `${githubUrl}/compare/${left}...${right}`
 }

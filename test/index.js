@@ -14,14 +14,11 @@ test('lints various', function (t) {
     t.is(actual, expected)
     t.same(file.messages.map(String), [
       `${file.path}:1:1-1:4: Changelog must start with a top-level "Changelog" heading`,
-      `${file.path}:1:1-28:65: Releases must be sorted latest-first`,
-      `${file.path}:5:1-5:28: Release heading must be "Unreleased"`,
-      `${file.path}:5:1-5:28: Release (unreleased) is empty`,
+      `${file.path}:1:1-24:62: Releases must be sorted latest-first`,
       `${file.path}:3:1-3:42: Release (3.0.0) is empty`,
-      `${file.path}:18:1-18:22: Release date must have format YYYY-MM-DD`,
+      `${file.path}:16:1-16:22: Release date must have format YYYY-MM-DD`,
       `${file.path}:3:1-3:42: Use link reference in release heading`,
-      `${file.path}:18:1-18:22: Release version must have a link`,
-      `${file.path}:1:1-28:65: Definitions must be sorted latest-first`
+      `${file.path}:16:1-16:22: Release version must have a link`
     ])
     t.end()
   })
@@ -37,11 +34,10 @@ test('fixes various', function (t) {
     }
     t.same(file.messages.map(String).sort(), [
       // Can't be fixed
-      `${file.path}:18:1-18:22: Release date must have format YYYY-MM-DD`,
+      `${file.path}:16:1-16:22: Release date must have format YYYY-MM-DD`,
 
       // TODO: write test
-      `${file.path}:3:1-3:42: Failed to get commits for release (3.0.0): Could not find v2.0.1.`,
-      `${file.path}:5:1-5:28: Failed to get commits for release (unreleased): Could not find v3.0.0.`
+      `${file.path}:3:1-3:42: Failed to get commits for release (3.0.0): Could not find v2.0.1.`
     ])
     t.end()
   })
@@ -119,8 +115,8 @@ test('sorts releases and definitions', function (t) {
     t.ifError(err)
     t.is(actual, expected)
     t.same(file.messages.map(String), [
-      `${file.path}:1:1-29:62: Releases must be sorted latest-first`,
-      `${file.path}:1:1-29:62: Definitions must be sorted latest-first`
+      `${file.path}:1:1-23:62: Releases must be sorted latest-first`,
+      `${file.path}:1:1-23:62: Definitions must be sorted latest-first`
     ])
   })
 
@@ -138,7 +134,7 @@ test('sorts extra definitions lexicographically', function (t) {
     t.ifError(err)
     t.is(actual, expected)
     t.same(file.messages.map(String), [
-      `${file.path}:1:1-33:62: Definitions must be sorted latest-first`
+      `${file.path}:1:1-27:62: Definitions must be sorted latest-first`
     ])
   })
 

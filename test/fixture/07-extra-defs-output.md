@@ -1,9 +1,5 @@
 # Changelog
 
-## [Unreleased][unreleased]
-
-foo
-
 ## [3.0.0] - 2019-03-01
 
 ### Added
@@ -19,8 +15,6 @@ foo
 ## [1.0.0] - 2019-01-01
 
 bar
-
-[unreleased]: https://github.com/test/test/compare/v3.0.0...HEAD
 
 [3.0.0]: https://github.com/test/test/compare/v2.0.0...v3.0.0
 

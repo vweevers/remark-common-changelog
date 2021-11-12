@@ -1,9 +1,5 @@
 # Changelog
 
-## [Unreleased][unreleased]
-
-a
-
 ## [4.0.0] - 2019-04-01
 
 b
@@ -19,8 +15,6 @@ d
 ## [1.0.0] - 2019-01-01
 
 e
-
-[unreleased]: https://github.com/test/test/compare/v4.0.0...HEAD
 
 [4.0.0]: https://github.com/test/test/compare/v3.0.0...v4.0.0
 

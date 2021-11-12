@@ -37,7 +37,7 @@ Release must start with second-level heading.
 
 ### `release-heading`
 
-Release heading must be `Unreleased` or have the format `<version> - <date>`.
+Release heading must have the format `<version> - <date>`.
 
 ### `release-version`
 
@@ -71,7 +71,7 @@ Release must have a date with format `YYYY-MM-DD`.
 
 ### `latest-release-first`
 
-Releases must be sorted latest-first according to semver rules. If there is an Unreleased section, it must be the very first. In `fix` mode, releases are reordered.
+Releases must be sorted latest-first according to semver rules. In `fix` mode, releases are reordered.
 
 ### `latest-definition-first`
 
@@ -97,7 +97,7 @@ Each release must have a unique version.
 
 ### `no-empty-release`
 
-A release section must have content. This also goes for the Unreleased section.
+A release must have content.
 
 In fix mode, an empty release is filled with a commit log as a leg up. Merge commits are skipped. GitHub merge commits ("Merge pull request #n") are used to annotate commits with a PR number (best effort). Squashed GitHub commits that have a default commit description (a list of squashed commits) are converted to sublists.
 

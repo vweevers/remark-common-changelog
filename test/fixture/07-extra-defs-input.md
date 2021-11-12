@@ -1,9 +1,5 @@
 # Changelog
 
-## [Unreleased][unreleased]
-
-foo
-
 ## [3.0.0] - 2019-03-01
 
 ### Added
@@ -23,8 +19,6 @@ bar
 [z]: https://example.com/z
 
 [a]: https://example.com/a
-
-[unreleased]: https://github.com/test/test/compare/v3.0.0...HEAD
 
 [y]: https://example.com/y
 
