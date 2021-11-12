@@ -133,6 +133,7 @@ module.exports = function attacher (opts) {
       }
 
       let target = semver.valid(add)
+      const specificVersion = !!target
 
       if (!target) {
         const lastRelease = changelog.children[0]
@@ -154,9 +155,12 @@ module.exports = function attacher (opts) {
         return
       }
 
+      // Take date from tag if it exists and was annotated
+      const date = specificVersion ? tagDate(cwd, 'v' + target) : null
+      const Ctor = opts.Date || Date
+
       // Will be sorted and populated by other code
-      // TODO: take date from tag if it exists
-      changelog.createRelease(target, releaseDate(opts.Date || Date))
+      changelog.createRelease(target, releaseDate(date || new Ctor()))
     }
 
     async function lintRelease (release) {
@@ -329,6 +333,20 @@ function gitTags (cwd) {
   }).split(/\r?\n/).filter(Boolean)
 }
 
+function tagDate (cwd, tag) {
+  try {
+    const iso = execFileSync('git', ['log', '-1', '--format=%aI', tag], {
+      cwd,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).trim()
+
+    return iso ? new Date(iso) : null
+  } catch {
+    return null
+  }
+}
+
 function repo (repository) {
   return (repository && repository.url) || repository
 }
@@ -360,8 +378,7 @@ function sortMap (map, comparator) {
   return new Map(entries)
 }
 
-function releaseDate (Ctor) {
-  const date = new Ctor()
+function releaseDate (date) {
   const yyyy = date.getFullYear()
   const mm = twoDigits(date.getMonth() + 1)
   const dd = twoDigits(date.getDate())
