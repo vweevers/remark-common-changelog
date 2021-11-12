@@ -1,7 +1,7 @@
 {
-  "name": "remark-changelog",
-  "version": "1.2.1",
-  "description": "Lint or fix a changelog written in markdown, following Keep A Changelog.",
+  "name": "remark-common-changelog",
+  "version": "0.0.1",
+  "description": "Lint or fix a changelog written in markdown, following Common Changelog.",
   "license": "MIT",
   "author": "Vincent Weevers",
   "scripts": {
@@ -30,13 +30,13 @@
   },
   "keywords": [
     "changelog",
-    "keep-a-changelog",
+    "common-changelog",
     "remark"
   ],
   "engines": {
     "node": ">=10"
   },
-  "repository": "vweevers/remark-changelog",
-  "bugs": "https://github.com/vweevers/remark-changelog/issues",
-  "homepage": "https://github.com/vweevers/remark-changelog"
+  "repository": "vweevers/remark-common-changelog",
+  "bugs": "https://github.com/vweevers/remark-common-changelog/issues",
+  "homepage": "https://github.com/vweevers/remark-common-changelog"
 }

@@ -1,16 +1,17 @@
-# remark-changelog
+# remark-common-changelog
 
-**Lint or fix a changelog written in markdown, following [`Keep A Changelog`](https://keepachangelog.com/en/1.0.0/).** Changelogs should be written by humans, for humans. This tool focuses on helping you do that.
+**Lint or fix a changelog written in markdown, following [`Common Changelog`](https://common-changelog.org).** Changelogs should be written by humans, for humans. This tool focuses on helping you do that.
 
-[![npm status](http://img.shields.io/npm/v/remark-changelog.svg)](https://www.npmjs.org/package/remark-changelog)
-[![node](https://img.shields.io/node/v/remark-changelog.svg)](https://www.npmjs.org/package/remark-changelog)
-[![Test](https://github.com/vweevers/remark-changelog/actions/workflows/test.yml/badge.svg)](https://github.com/vweevers/remark-changelog/actions/workflows/test.yml)
-[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+[![npm status](http://img.shields.io/npm/v/remark-common-changelog.svg)](https://www.npmjs.org/package/remark-common-changelog)
+[![Node version](https://img.shields.io/node/v/remark-common-changelog.svg)](https://www.npmjs.org/package/remark-common-changelog)
+[![Test](https://img.shields.io/github/workflow/status/vweevers/remark-common-changelog/Test?label=test)](https://github.com/vweevers/remark-common-changelog/actions/workflows/test.yml)
+[![Standard](https://img.shields.io/badge/standard-informational?logo=javascript&logoColor=fff)](https://standardjs.com)
+[![Common Changelog](https://common-changelog.org/badge.svg)](https://common-changelog.org)
 
 ## Usage
 
 ```js
-const changelog = require('remark-changelog')
+const changelog = require('remark-common-changelog')
 const vfile = require('to-vfile')
 const remark = require('remark')
 
@@ -55,13 +56,13 @@ Valid:
 ```md
 ## [1.0.0] - 2019-08-23
 
-[1.0.0]: https://github.com/vweevers/remark-changelog/compare/v0.0.1...v1.0.0
+[1.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v0.0.1...v1.0.0
 ```
 
 Invalid:
 
 ```md
-## [1.0.0](https://github.com/vweevers/remark-changelog/compare/v0.0.1...v1.0.0) - 2019-08-23
+## [1.0.0](https://github.com/vweevers/remark-common-changelog/compare/v0.0.1...v1.0.0) - 2019-08-23
 ```
 
 ### `release-date`
@@ -79,15 +80,15 @@ Definitions must be sorted latest-first, same as releases. Any additional defini
 Valid:
 
 ```md
-[2.0.0]: https://github.com/vweevers/remark-changelog/compare/v1.0.0...v2.0.0
-[1.0.0]: https://github.com/vweevers/remark-changelog/compare/v0.0.1...v1.0.0
+[2.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v1.0.0...v2.0.0
+[1.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v0.0.1...v1.0.0
 ```
 
 Invalid:
 
 ```md
-[1.0.0]: https://github.com/vweevers/remark-changelog/compare/v0.0.1...v1.0.0
-[2.0.0]: https://github.com/vweevers/remark-changelog/compare/v1.0.0...v2.0.0
+[1.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v0.0.1...v1.0.0
+[2.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v1.0.0...v2.0.0
 ```
 
 ### `unique-release`
@@ -139,13 +140,13 @@ A group must not be empty. Invalid:
 
 ### `no-uncategorized-changes`
 
-There should not be a group with heading Uncategorized. This group is added by `remark-changelog` if the `fix` option is true and it populates an empty release with commits. This rule then hints that changes should be categorized.
+There should not be a group with heading Uncategorized. This group is added by `remark-common-changelog` if the `fix` option is true and it populates an empty release with commits. This rule then hints that changes should be categorized.
 
 ### `filename`
 
 Filename must be `CHANGELOG.md`.
 
-To support using `remark-changelog` in a pipeline that runs on other files too, `remark-changelog` ignores files other than `CHANGELOG.md` but it does reject alternative extensions and the alternative names `HISTORY` and `RELEASES`.
+To support using `remark-common-changelog` in a pipeline that runs on other files too, `remark-common-changelog` ignores files other than `CHANGELOG.md` but it does reject alternative extensions and the alternative names `HISTORY` and `RELEASES`.
 
 ## API
 
@@ -166,20 +167,14 @@ Options:
     - The `prerelease` type works the same as `prepatch` if the previous version is a non-prerelease. If the previous is already a prerelease then it's simply incremented (for example `4.0.0-rc.2 => 4.0.0-rc.3`).
   - A specific version like 2.4.0 (must be [semver](https://semver.org/)). This can also be used to insert a missing version (that is not necessarily the latest).
 
-## FAQ
-
-### Why not call it `remark-keep-a-changelog`?
-
-Because we might deviate from `Keep A Changelog`, which is too loose to lint and has a broad target audience and thus technical scope. Conversely, `remark-changelog` only works on npm packages with a GitHub repository, to start.
-
 ## Install
 
 With [npm](https://npmjs.org) do:
 
 ```
-npm install remark-changelog
+npm install remark-common-changelog
 ```
 
 ## License
 
-[MIT](LICENSE.md) © 2019-present Vincent Weevers
+[MIT](LICENSE)
