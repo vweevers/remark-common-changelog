@@ -116,8 +116,22 @@ module.exports = function attacher (opts) {
       return root
     }
 
+    // Add previousVersion property to releases, used to find commits between releases
     function relateVersions (release, i, arr) {
       release.previousVersion = arr[i + 1] ? arr[i + 1].version : null
+
+      if (release.version) {
+        // For when not all tags have releases, find a tag between this release and the previous
+        // TODO: use a binary search
+        const ti = tags.findIndex(el => el.version === release.version)
+        const previousTag = ti >= 0 ? tags[ti + 1] && tags[ti + 1].version : tags[0] && tags[0].version
+        const gt = (v) => release.previousVersion ? semver.gt(v, release.previousVersion) : true
+
+        // Take it if previous release < previous tag < version
+        if (previousTag && gt(previousTag) && semver.gt(release.version, previousTag)) {
+          release.previousVersion = previousTag
+        }
+      }
     }
 
     function addRelease (add) {
@@ -133,12 +147,13 @@ module.exports = function attacher (opts) {
       const specificVersion = !!target
 
       if (!target) {
-        const lastRelease = changelog.children[0]
-        const from = (lastRelease && lastRelease.version) || currentVersion
+        let from = currentVersion
 
-        if (!from) {
-          warn('No version found to start from', root, 'add-new-release')
-          return
+        // Take version of last release if greater than current version
+        const lastRelease = changelog.children[0] && changelog.children[0].version
+
+        if (lastRelease && semver.gt(lastRelease, from)) {
+          from = lastRelease
         }
 
         target = semver.inc(from, add)
@@ -318,16 +333,22 @@ function defaultReleaseUrl (githubUrl, tags, version) {
 // If a (historical) tag without "v" prefix exists, use that.
 function forgivingTag (tag, tags) {
   if (tag[0] !== 'v') tag = 'v' + tag
-  if (tags.indexOf(tag) >= 0) return tag
-  const unprefixed = tag.replace(/^v/, '')
-  if (tags.indexOf(unprefixed) >= 0) return unprefixed
+  const match = tags.find(el => el.normalTag === tag)
+  if (match) return match.tag
   return tag
 }
 
 function gitTags (cwd) {
-  return execFileSync('git', ['tag'], {
+  const output = execFileSync('git', ['tag'], {
     cwd, maxBuffer: 1024 * 1024 * 16, encoding: 'utf8'
-  }).split(/\r?\n/).filter(Boolean)
+  })
+
+  const tags = output.split(/\r?\n/).map(tag => {
+    const version = tag && semver.valid(tag)
+    return version ? { tag, normalTag: 'v' + version, version } : null
+  })
+
+  return tags.filter(Boolean).sort((a, b) => cmpVersion(a.version, b.version))
 }
 
 function tagDate (cwd, tag) {
@@ -345,11 +366,7 @@ function tagDate (cwd, tag) {
 }
 
 function lastTagVersion (tags) {
-  const sorted = tags
-    .filter(t => t.startsWith('v'))
-    .sort(cmpVersion)
-
-  return sorted.length ? sorted[0].slice(1) : null
+  return tags.length ? tags[0].version : null
 }
 
 function repo (cwd, options, pkg) {
