@@ -18,6 +18,6 @@
 
 Initial release.
 
-[1.0.0-rc.10]: https://github.com/test/test/compare/v1.0.0-rc.9...v1.0.0-rc.10
+[1.0.0-rc.10]: https://github.com/test/test/releases/tag/v1.0.0-rc.10
 
 [1.0.0-rc.9]: https://github.com/test/test/releases/tag/v1.0.0-rc.9

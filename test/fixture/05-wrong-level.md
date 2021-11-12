@@ -8,4 +8,4 @@ Foo
 
 Initial release.
 
-[2.0.0]: https://github.com/test/test/compare/v1.0.0...v2.0.0
+[2.0.0]: https://github.com/test/test/releases/tag/v2.0.0

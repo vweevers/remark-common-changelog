@@ -79,13 +79,13 @@ module.exports = function attacher (opts) {
 
     // Lint or rebuild headings, with links and definitions
     for (let i = 0; i < changelog.children.length; i++) {
-      const { version, previousVersion, date, linkType, heading } = changelog.children[i]
+      const { version, date, linkType, heading } = changelog.children[i]
 
       if (!version) continue
 
       const identifier = version.toLowerCase()
       const oldUrl = (changelog.definitions.get(identifier) || {}).url
-      const url = oldUrl || defaultReleaseUrl(githubUrl, tags, version, previousVersion)
+      const url = oldUrl || defaultReleaseUrl(githubUrl, tags, version)
       const isFirstRelease = i === changelog.children.length - 1
 
       if (fix) {
@@ -310,16 +310,8 @@ function cmpVersion (a, b) {
   return av && bv ? semver.compare(bv, av) : av ? -1 : bv ? 1 : a.localeCompare(b)
 }
 
-// TODO: https://github.com/vweevers/hallmark/issues/82
-function defaultReleaseUrl (githubUrl, tags, version, prevVersion) {
-  if (!prevVersion) {
-    return `${githubUrl}/releases/tag/${forgivingTag(`v${version}`, tags)}`
-  }
-
-  const left = forgivingTag(`v${prevVersion}`, tags)
-  const right = forgivingTag(`v${version}`, tags)
-
-  return `${githubUrl}/compare/${left}...${right}`
+function defaultReleaseUrl (githubUrl, tags, version) {
+  return `${githubUrl}/releases/tag/${forgivingTag(`v${version}`, tags)}`
 }
 
 // If a (historical) tag without "v" prefix exists, use that.

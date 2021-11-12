@@ -14,7 +14,7 @@ test('lints various', function (t) {
     t.is(actual, expected)
     t.same(file.messages.map(String), [
       `${file.path}:1:1-1:4: Changelog must start with a top-level "Changelog" heading`,
-      `${file.path}:1:1-24:62: Releases must be sorted latest-first`,
+      `${file.path}:1:1-24:58: Releases must be sorted latest-first`,
       `${file.path}:3:1-3:42: Release (3.0.0) is empty`,
       `${file.path}:16:1-16:22: Release date must have format YYYY-MM-DD`,
       `${file.path}:3:1-3:42: Use link reference in release heading`,
@@ -115,8 +115,8 @@ test('sorts releases and definitions', function (t) {
     t.ifError(err)
     t.is(actual, expected)
     t.same(file.messages.map(String), [
-      `${file.path}:1:1-23:62: Releases must be sorted latest-first`,
-      `${file.path}:1:1-23:62: Definitions must be sorted latest-first`
+      `${file.path}:1:1-23:58: Releases must be sorted latest-first`,
+      `${file.path}:1:1-23:58: Definitions must be sorted latest-first`
     ])
   })
 
@@ -134,7 +134,7 @@ test('sorts extra definitions lexicographically', function (t) {
     t.ifError(err)
     t.is(actual, expected)
     t.same(file.messages.map(String), [
-      `${file.path}:1:1-27:62: Definitions must be sorted latest-first`
+      `${file.path}:1:1-27:58: Definitions must be sorted latest-first`
     ])
   })
 

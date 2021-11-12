@@ -45,7 +45,7 @@ Release must have a semver-valid version, without `v` prefix. Releases that have
 
 ### `release-version-link`
 
-Release version must have a link. The destination URL is not linted. In `fix` mode links are automatically inserted (to `https://github.com/OWNER/REPO/compare/A...B` or `https://github.com/OWNER/REPO/releases/tag/$tag` for the oldest release) requiring a nearby `package.json` with a `repository` field. The link is optional for the oldest (last listed) release.
+Release version must have a link. The destination URL is not linted. In `fix` mode links are automatically inserted (to `https://github.com/OWNER/REPO/releases/tag/$tag`) requiring a nearby `package.json` with a `repository` field. The link is optional for the oldest (last listed) release.
 
 ### `release-version-link-reference`
 
@@ -56,13 +56,13 @@ Valid:
 ```md
 ## [1.0.0] - 2019-08-23
 
-[1.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v0.0.1...v1.0.0
+[1.0.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v1.0.0
 ```
 
 Invalid:
 
 ```md
-## [1.0.0](https://github.com/vweevers/remark-common-changelog/compare/v0.0.1...v1.0.0) - 2019-08-23
+## [1.0.0](https://github.com/vweevers/remark-common-changelog/releases/tag/v1.0.0) - 2019-08-23
 ```
 
 ### `release-date`
@@ -80,15 +80,15 @@ Definitions must be sorted latest-first, same as releases. Any additional defini
 Valid:
 
 ```md
-[2.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v1.0.0...v2.0.0
-[1.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v0.0.1...v1.0.0
+[2.0.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.0.0
+[1.0.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v1.0.0
 ```
 
 Invalid:
 
 ```md
-[1.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v0.0.1...v1.0.0
-[2.0.0]: https://github.com/vweevers/remark-common-changelog/compare/v1.0.0...v2.0.0
+[1.0.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v1.0.0
+[2.0.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.0.0
 ```
 
 ### `unique-release`
