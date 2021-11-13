@@ -149,7 +149,7 @@ To support using `remark-common-changelog` in a pipeline that runs on other file
 
 ## API
 
-### `changelog([opts])`
+### `changelog([options])`
 
 Options:
 
@@ -158,13 +158,21 @@ Options:
 - `pkg` (object): a parsed `package.json`, defaults to reading a nearby `package.json` (starting in `cwd` and then its parent directories)
 - `repository` (string or object): defaults to `repository` field of `pkg`. Used to construct diff URLs.
 - `version` (string): defaults to `version` field of `pkg` or the last tag. Used to identify a new release (anything that's greater than `version` and would normally be rejected in fix mode because it has no git tag yet) to support the workflow of updating a changelog before tagging.
-- `submodules` (boolean): enable experimental git submodule support. Will collect commits from submodules and list them in the changelog as `<name>: <message>`.
-- `add` (string): add a new changelog entry (only if `fix` is true). Value must be one of:
-  - A release type: `major`, `minor`, `patch`, `premajor`, `preminor`, `prepatch`, `prerelease` (relative to last entry in changelog)
+- `add` (string): add a new release (only if `fix` is true) and populate it with commits. Value must be one of:
+  - A release type: `major`, `minor`, `patch`, `premajor`, `preminor`, `prepatch`, `prerelease`
+    - These take the current version from the semver-latest tag, release or `package.json` (whichever is greatest if found) and bump it
     - The `major` type bumps the major version (for example `2.4.1 => 3.0.0`); `minor` and `patch` work the same way.
     - The `premajor` type bumps the version up to the next major version and down to a prerelease of that major version; `preminor` and `prepatch` work the same way.
-    - The `prerelease` type works the same as `prepatch` if the previous version is a non-prerelease. If the previous is already a prerelease then it's simply incremented (for example `4.0.0-rc.2 => 4.0.0-rc.3`).
-  - A specific version like 2.4.0 (must be [semver](https://semver.org/)). This can also be used to insert a missing version (that is not necessarily the latest).
+    - The `prerelease` type works the same as `prepatch` if the current version is a non-prerelease. If the current is already a prerelease then it's simply incremented (for example `4.0.0-rc.2` to `4.0.0-rc.3`).
+  - A [semver-valid](https://semver.org/) version like 2.4.0.
+- `commits` (boolean, default `true`, only relevant for `add`): if `false`, don't populate the release with commits.
+- `submodules` (boolean, only relevant for `add`): enable experimental git submodule support. Will collect commits from submodules and list them in the changelog as `<name>: <message>`.
+
+#### Notes on `add`
+
+If the (resulting) version is greater than the current version then commits will be taken from the semver-latest tag until HEAD. I.e. documenting a new release before it's git-tagged. If the version matches an existing tag then a release will be inserted at the appriopriate place, populated with commits between that version's tag and the one before it. I.e. documenting a past release after it's git-tagged.
+
+Works best on a linear git history. If `remark-common-changelog` encounters other tags in the commit range (which may happen if releases were made in parallel on other branches) it will stop there and not include further (older) commits.
 
 ## Install
 

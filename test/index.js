@@ -150,8 +150,8 @@ test('lints empty group', function (t) {
     t.ifError(err)
     t.is(actual, expected)
     t.same(file.messages.map(String), [
-      `${file.path}:5:1-5:10: Remove empty group Added`,
-      `${file.path}:7:1-7:10: Remove empty group Fixed`,
+      `${file.path}:5:1-5:10: Remove or fill empty group Added`,
+      `${file.path}:7:1-7:10: Remove or fill empty group Fixed`,
       `${file.path}:9:1-9:4: Group must start with a third-level, text-only heading`
     ])
     t.end()
@@ -163,8 +163,8 @@ test('lints uncategorized changes', function (t) {
     t.ifError(err)
     t.is(actual, expected)
     t.same(file.messages.map(String), [
-      `${file.path}:9:1-9:10: Remove empty group Fixed`,
-      `${file.path}:11:1-11:18: Remove empty group Uncategorized`,
+      `${file.path}:9:1-9:10: Remove or fill empty group Fixed`,
+      `${file.path}:11:1-11:18: Remove or fill empty group Uncategorized`,
       `${file.path}:19:1-19:18: Categorize the changes`
     ])
     t.end()

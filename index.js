@@ -223,29 +223,32 @@ module.exports = function attacher (opts) {
       const { heading, version, previousVersion } = release
 
       if (fix && version && previousVersion) {
-        const gt = forgivingTag(previousVersion, tags)
-        const opts = { cwd, gt, limit: 100, submodules }
+        const populate = opts.commits !== false
+        let commits = []
 
-        if (isNewVersion(version, previousVersion)) {
-          opts.lte = 'HEAD'
-        } else {
-          opts.lt = forgivingTag(version, tags)
-        }
+        if (populate) {
+          const gt = forgivingTag(previousVersion, tags)
+          const xopts = { cwd, gt, limit: 100, submodules }
 
-        let commits
+          if (isNewVersion(version, previousVersion)) {
+            xopts.lte = 'HEAD'
+          } else {
+            xopts.lt = forgivingTag(version, tags)
+          }
 
-        try {
-          commits = await getCommits(opts)
-        } catch (err) {
-          const msg = `Failed to get commits for release (${version}): ${err.message}`
-          warn(msg, heading, 'no-empty-release')
-          return
+          try {
+            commits = await getCommits(xopts)
+          } catch (err) {
+            const msg = `Failed to get commits for release (${version}): ${err.message}`
+            warn(msg, heading, 'no-empty-release')
+            return
+          }
         }
 
         const grouped = getChanges(commits)
 
         // Add other types as a hint to categorize
-        const insertEmpty = grouped[UNCATEGORIZED].length > 0
+        const insertEmpty = populate ? grouped[UNCATEGORIZED].length > 0 : true
 
         for (const type in grouped) {
           const changes = grouped[type]
@@ -279,7 +282,7 @@ module.exports = function attacher (opts) {
       if (!type) {
         warn(`Group heading must be one of ${types}`, group.heading, 'group-heading-type')
       } else if ((type === UNCATEGORIZED || !hasUncategorizedChanges) && group.isEmpty()) {
-        warn(`Remove empty group ${type}`, group.heading, 'no-empty-group')
+        warn(`Remove or fill empty group ${type}`, group.heading, 'no-empty-group')
       } else if (!GROUP_TYPES.has(type)) {
         if (type === UNCATEGORIZED) {
           warn('Categorize the changes', group.heading, 'no-uncategorized-changes')
