@@ -11,6 +11,8 @@
 
 ## Usage
 
+_This package is ESM-only._
+
 ```js
 import changelog from 'remark-common-changelog'
 import vfile from 'to-vfile'

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.0] - 2021-11-14
+
+### Changed
+
+- **Breaking:** use ESM and drop Node.js < 12.20 ([`a8eacb4`](https://github.com/vweevers/remark-common-changelog/commit/a8eacb4))
+- Bump dependencies ([`c8c8352`](https://github.com/vweevers/remark-common-changelog/commit/c8c8352))
+
 ## [1.0.0] - 2021-11-14
 
 _First stable release._
@@ -33,6 +40,8 @@ _First stable release._
 ## [0.0.1] - 2021-11-12
 
 _:seedling: Initial release._
+
+[2.0.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.0.0
 
 [1.0.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v1.0.0
 
