@@ -1,23 +1,21 @@
-'use strict'
+import is from 'unist-util-is'
+import u from 'unist-builder'
+import semver from 'semver'
+import isSorted from 'is-array-sorted'
+import Githost from 'find-githost'
+import closest from 'read-closest-package'
+import path from 'path'
+import { execFileSync } from 'child_process'
+import Changelog from './lib/changelog.js'
+import getCommits from './lib/git-log-between.js'
+import getChanges from './lib/get-changes.js'
 
-const is = require('unist-util-is')
-const u = require('unist-builder')
-const semver = require('semver')
-const isSorted = require('is-array-sorted')
-const Githost = require('find-githost')
-const closest = require('read-closest-package')
-const path = require('path')
-const execFileSync = require('child_process').execFileSync
-const Changelog = require('./lib/changelog')
-const getCommits = require('./lib/git-log-between')
-const getChanges = require('./lib/get-changes')
-const plugin = require('./package.json').name
-
+const plugin = 'remark-common-changelog'
 const REJECT_NAMES = new Set(['history', 'releases', 'changelog'])
 const GROUP_TYPES = new Set(['Changed', 'Added', 'Deprecated', 'Removed', 'Fixed', 'Security'])
 const UNCATEGORIZED = 'Uncategorized'
 
-module.exports = function attacher (opts) {
+export default function attacher (opts) {
   opts = opts || {}
 
   const fix = !!opts.fix

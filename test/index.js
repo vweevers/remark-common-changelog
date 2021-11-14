@@ -1,12 +1,10 @@
-'use strict'
-
-const test = require('tape')
-const fs = require('fs')
-const path = require('path')
-const remark = require('remark')
-const tempy = require('tempy')
-const execFileSync = require('child_process').execFileSync
-const plugin = require('..')
+import test from 'tape'
+import fs from 'fs'
+import path from 'path'
+import remark from 'remark'
+import tempy from 'tempy'
+import { execFileSync } from 'child_process'
+import plugin from '../index.js'
 
 test('lints various', function (t) {
   run('00-various-input', '00-various-input', { options: { fix: false } }, (err, { file, actual, expected }) => {
@@ -221,8 +219,8 @@ test('add preexisting release', function (t) {
 
 function run (inputFixture, outputFixture, opts, test) {
   const cwd = tempy.directory()
-  const inputFile = path.join(__dirname, 'fixture', inputFixture + '.md')
-  const outputFile = path.join(__dirname, 'fixture', outputFixture + '.md')
+  const inputFile = new URL('./fixture/' + inputFixture + '.md', import.meta.url)
+  const outputFile = new URL('./fixture/' + outputFixture + '.md', import.meta.url)
   const pkgFile = path.join(cwd, 'package.json')
   const { options, commits } = opts
   const stdio = 'ignore'
