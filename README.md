@@ -5,7 +5,9 @@
 [![npm status](http://img.shields.io/npm/v/remark-common-changelog.svg)](https://www.npmjs.org/package/remark-common-changelog)
 [![Node version](https://img.shields.io/node/v/remark-common-changelog.svg)](https://www.npmjs.org/package/remark-common-changelog)
 [![Test](https://img.shields.io/github/workflow/status/vweevers/remark-common-changelog/Test?label=test)](https://github.com/vweevers/remark-common-changelog/actions/workflows/test.yml)
-[![Standard](https://img.shields.io/badge/standard-informational?logo=javascript&logoColor=fff)](https://standardjs.com)
+[![Standard](https://img.shields.io/badge/standard-informational?logo=javascript\&logoColor=fff)](https://standardjs.com)
+[![Markdown Style Guide](https://img.shields.io/badge/hallmark-informational?logo=markdown)](https://github.com/vweevers/hallmark)
+[![Common Changelog](https://common-changelog.org/badge.svg)](https://common-changelog.org)
 
 ## Usage
 
