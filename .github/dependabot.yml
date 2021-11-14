@@ -5,10 +5,7 @@ updates:
     schedule:
       interval: monthly
     ignore:
-      # Ignored until we migrate to remark 13
-      - dependency-name: unist-builder
-      - dependency-name: unist-util-is
-      - dependency-name: remark
+      - dependency-name: standard
   - package-ecosystem: github-actions
     directory: /
     schedule:

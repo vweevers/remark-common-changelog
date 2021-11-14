@@ -15,19 +15,18 @@
   ],
   "dependencies": {
     "find-githost": "^1.0.0",
-    "is-array-sorted": "^2.0.0",
     "isomorphic-git": "^1.7.8",
     "read-closest-package": "^1.2.0",
     "semver": "^7.3.2",
-    "unist-builder": "^2.0.3",
-    "unist-util-is": "^4.0.0"
+    "unist-builder": "^3.0.0",
+    "unist-util-is": "^5.1.1"
   },
   "devDependencies": {
     "depcheck": "^1.2.0",
-    "remark": "^12.0.1",
+    "remark": "^14.0.1",
     "standard": "^16.0.3",
     "tape": "^5.0.1",
-    "tempy": "^1.0.1"
+    "tempy": "^2.0.0"
   },
   "keywords": [
     "changelog",

@@ -1,7 +1,6 @@
-import is from 'unist-util-is'
-import u from 'unist-builder'
+import { is } from 'unist-util-is'
+import { u } from 'unist-builder'
 import semver from 'semver'
-import isSorted from 'is-array-sorted'
 import Githost from 'find-githost'
 import closest from 'read-closest-package'
 import path from 'path'
@@ -64,7 +63,7 @@ export default function attacher (opts) {
       }
 
       changelog.children.sort(cmpRelease)
-    } else if (!isSorted(changelog.children, { comparator: cmpRelease })) {
+    } else if (!isSorted(changelog.children, cmpRelease)) {
       warn('Releases must be sorted latest-first', root, 'latest-release-first')
 
       // Sort anyway (doesn't affect original tree) so that we
@@ -390,8 +389,18 @@ function repo (cwd, options, pkg) {
   return host.homepage()
 }
 
+function isSorted (array, comparator) {
+  for (let i = 0; i < array.length - 1; i++) {
+    if (comparator(array[i], array[i + 1]) > 0) {
+      return false
+    }
+  }
+
+  return true
+}
+
 function isMapSorted (map, comparator) {
-  return isSorted(Array.from(map.keys()), { comparator })
+  return isSorted(Array.from(map.keys()), comparator)
 }
 
 function sortMap (map, comparator) {

@@ -1,7 +1,7 @@
 import test from 'tape'
 import fs from 'fs'
 import path from 'path'
-import remark from 'remark'
+import { remark } from 'remark'
 import tempy from 'tempy'
 import { execFileSync } from 'child_process'
 import plugin from '../index.js'
@@ -262,7 +262,14 @@ function run (inputFixture, outputFixture, opts, test) {
   const expected = fs.readFileSync(outputFile, 'utf8').trim().replace(/\r\n/g, '\n')
 
   remark()
-    .use({ settings: { fences: true, listItemIndent: '1' } })
+    .use({
+      settings: {
+        fences: true,
+        listItemIndent: 'one',
+        bullet: '-',
+        emphasis: '_'
+      }
+    })
     .use(() => (tree, file) => {
       file.path = path.join(cwd, opts.filename || 'CHANGELOG.md')
       file.cwd = cwd
