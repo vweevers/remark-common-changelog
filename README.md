@@ -10,9 +10,9 @@
 ## Usage
 
 ```js
-const changelog = require('remark-common-changelog')
-const vfile = require('to-vfile')
-const remark = require('remark')
+import changelog from 'remark-common-changelog'
+import vfile from 'to-vfile'
+import { remark } from 'remark'
 
 remark()
   .use(changelog)
