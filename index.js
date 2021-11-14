@@ -41,6 +41,9 @@ module.exports = function attacher (opts) {
     const cwd = path.resolve(opts.cwd || file.cwd)
     const pkg = lazyPkg(cwd, opts.pkg)
     const githubUrl = repo(cwd, opts, pkg)
+
+    // NOTE: tags and currentVersion cannot be used in lint mode because CI
+    // like GitHub Actions commonly uses shallow git checkouts without tags.
     const tags = gitTags(cwd)
     const currentVersion = opts.version || pkg().version || lastTagVersion(tags) || '0.0.0'
 
@@ -71,7 +74,11 @@ module.exports = function attacher (opts) {
       changelog.children.sort(cmpRelease)
     }
 
-    changelog.children.forEach(relateVersions)
+    if (fix) {
+      // Only needed in fix mode and in lint mode we may not have tags.
+      changelog.children.forEach(relateVersions)
+    }
+
     await Promise.all(changelog.children.map(lintRelease))
 
     // Lint or rebuild headings, with links and definitions
@@ -82,12 +89,12 @@ module.exports = function attacher (opts) {
 
       const identifier = version.toLowerCase()
       const oldUrl = (changelog.definitions.get(identifier) || {}).url
-      const url = oldUrl || defaultReleaseUrl(githubUrl, tags, version)
       const isFirstRelease = i === changelog.children.length - 1
 
       if (fix) {
         const label = identifier
         const referenceType = 'shortcut'
+        const url = oldUrl || defaultReleaseUrl(githubUrl, tags, version)
 
         heading.children = [u('linkReference', { identifier, label, referenceType }, [
           u('text', version)
