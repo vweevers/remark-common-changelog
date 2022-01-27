@@ -269,6 +269,9 @@ export default function attacher (opts) {
         }
 
         if (!release.isEmpty()) return
+      } else if (fix && (version === '0.0.1' || version === '1.0.0')) {
+        release.createNotice(':seedling: Initial release.')
+        return
       }
 
       warn(`Release (${version || 'n/a'}) is empty`, heading, 'no-empty-release')
