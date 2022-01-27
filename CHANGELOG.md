@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0] - 2022-01-28
+
+### Added
+
+- Support inserting a range of (or all) releases ([`99016ab`](https://github.com/vweevers/remark-common-changelog/commit/99016ab))
+- Insert `:seedling: Initial release` on initial release ([`4f9dd1a`](https://github.com/vweevers/remark-common-changelog/commit/4f9dd1a))
+
 ## [2.0.0] - 2021-11-14
 
 ### Changed
@@ -40,6 +47,8 @@ _First stable release._
 ## [0.0.1] - 2021-11-12
 
 _:seedling: Initial release._
+
+[2.1.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.1.0
 
 [2.0.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.0.0
 
