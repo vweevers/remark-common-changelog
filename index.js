@@ -59,7 +59,7 @@ export default function attacher (opts) {
 
     if (fix) {
       if (add) {
-        addRelease(add)
+        addRelease(add, true)
       }
 
       changelog.children.sort(cmpRelease)
@@ -138,9 +138,29 @@ export default function attacher (opts) {
       }
     }
 
-    function addRelease (add) {
+    function addRelease (add, asReleaseType) {
       if (Array.isArray(add)) {
-        add.forEach(addRelease)
+        add.forEach(x => addRelease(x, asReleaseType))
+        return
+      } else if (typeof add === 'object' && add !== null) {
+        // NOTE: experimental and undocumented
+        const range = { gte: null, lte: null }
+
+        for (const k of ['gte', 'lte']) {
+          if (add[k]) {
+            range[k] = typeof add[k] === 'string' ? semver.parse(add[k]) : null
+
+            if (!range[k]) {
+              warn('The `' + k + '` option must be a semver-valid version', root, 'add-new-release')
+              return
+            }
+          }
+        }
+
+        const versions = tags.map(t => t.version)
+        const matches = versions.filter(rangeFilter(range))
+
+        addRelease(matches, false)
         return
       } else if (typeof add !== 'string' || add === '') {
         warn('Target must be a non-empty string', root, 'add-new-release')
@@ -150,7 +170,7 @@ export default function attacher (opts) {
       let target = semver.valid(add)
       const specificVersion = !!target
 
-      if (!target) {
+      if (!target && asReleaseType) {
         let from = currentVersion
 
         // Take version of last release if greater than current version
@@ -334,6 +354,16 @@ function cmpVersion (a, b) {
   if (bv) bv = bv.replace(/-rc(\d+)$/, (m, p1) => '-rc.' + p1)
 
   return av && bv ? semver.compare(bv, av) : av ? -1 : bv ? 1 : a.localeCompare(b)
+}
+
+// TODO: use a binary search
+function rangeFilter (range) {
+  return function filter (v) {
+    return (
+      (range.gte == null || semver.gte(v, range.gte)) &&
+      (range.lte == null || semver.lte(v, range.lte))
+    )
+  }
 }
 
 function defaultReleaseUrl (githubUrl, tags, version) {
