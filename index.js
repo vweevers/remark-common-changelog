@@ -39,15 +39,9 @@ export default function attacher (opts) {
     const pkg = lazyPkg(cwd, opts.pkg)
     const githubUrl = repo(cwd, opts, pkg)
 
-    // NOTE: tags and currentVersion cannot be used in lint mode because CI
-    // like GitHub Actions commonly uses shallow git checkouts without tags.
+    // NOTE: tags cannot be used in lint mode because CI like GitHub Actions
+    // commonly uses shallow git checkouts without tags.
     const tags = gitTags(cwd)
-    const currentVersion = opts.version || pkg().version || lastTagVersion(tags) || '0.0.0'
-
-    if (semver.valid(currentVersion) !== currentVersion) {
-      throw new Error('No valid version found in package.json or options')
-    }
-
     const changelog = Changelog(parse, root.children)
     const versions = new Set()
 
@@ -171,13 +165,18 @@ export default function attacher (opts) {
       const specificVersion = !!target
 
       if (!target && asReleaseType) {
-        let from = currentVersion
+        // Determine current version if possible. If none yet, use 0.0.0.
+        let from = opts.version || pkg().version || nearestTaggedVersion(cwd) || '0.0.0'
 
         // Take version of last release if greater than current version
         const lastRelease = changelog.children[0] && changelog.children[0].version
 
         if (lastRelease && semver.gt(lastRelease, from)) {
           from = lastRelease
+        }
+
+        if (semver.valid(from) !== from) {
+          throw new Error(`Current version is not semver-valid: ${from}`)
         }
 
         target = semver.inc(from, add)
@@ -253,17 +252,21 @@ export default function attacher (opts) {
         if (populate) {
           const gt = forgivingTag(previousVersion, tags)
           const xopts = { cwd, gt, limit: 100, submodules }
+          const lt = tags.find(el => el.version === version)
 
-          if (isNewVersion(version, previousVersion)) {
-            xopts.lte = 'HEAD'
+          if (lt) {
+            // Take commits up until but excluding the tag
+            xopts.lt = lt.tag
           } else {
-            xopts.lt = forgivingTag(version, tags)
+            // If not tagged, assume version is new
+            xopts.lte = 'HEAD'
           }
 
           try {
             commits = await getCommits(xopts)
           } catch (err) {
-            const msg = `Failed to get commits for release (${version}): ${err.message}`
+            const hint = `> ${xopts.gt} ` + (xopts.lt ? `< ${xopts.lt}` : `<= ${xopts.lte}`)
+            const msg = `Failed to get commits for release (${version}) (${hint}): ${err.message}`
             warn(msg, heading, 'no-empty-release')
             return
           }
@@ -289,7 +292,7 @@ export default function attacher (opts) {
         }
 
         if (!release.isEmpty()) return
-      } else if (fix && (version === '0.0.1' || version === '1.0.0')) {
+      } else if (fix && (version === '0.0.1' || version === '0.1.0' || version === '1.0.0')) {
         release.createNotice(':seedling: Initial release.')
         return
       }
@@ -328,11 +331,6 @@ export default function attacher (opts) {
         pkg = pkg || closest.sync({ cwd }) || {}
         return pkg
       }
-    }
-
-    function isNewVersion (nextVersion, previousVersion) {
-      return previousVersion === currentVersion &&
-        cmpVersion(nextVersion, currentVersion) < 0
     }
   }
 }
@@ -391,6 +389,28 @@ function gitTags (cwd) {
   return tags.filter(Boolean).sort((a, b) => cmpVersion(a.version, b.version))
 }
 
+// TODO: use isomorphic-git if possible and if faster
+function nearestTaggedVersion (cwd) {
+  let output
+
+  try {
+    // Should only consider current branch. I.e. if a semver-later tag exists
+    // but points to a commit on a different branch, ignore it.
+    output = execFileSync('git', ['describe', '--tags', '--abbrev=0'], {
+      cwd,
+      encoding: 'utf8',
+
+      // Swallow stderr
+      stdio: ['ignore', 'pipe', 'ignore']
+    }).trim()
+  } catch {
+    // If no tags exist
+    return null
+  }
+
+  return (output && semver.valid(output)) || null
+}
+
 function tagDate (cwd, tag) {
   try {
     const iso = execFileSync('git', ['log', '-1', '--format=%aI', tag], {
@@ -403,10 +423,6 @@ function tagDate (cwd, tag) {
   } catch {
     return null
   }
-}
-
-function lastTagVersion (tags) {
-  return tags.length ? tags[0].version : null
 }
 
 function repo (cwd, options, pkg) {

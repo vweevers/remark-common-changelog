@@ -174,7 +174,7 @@ Options:
 
 #### Notes on `add`
 
-If the (resulting) version is greater than the current version then commits will be taken from the semver-latest tag until HEAD. I.e. documenting a new release before it's git-tagged. If the version matches an existing tag then a release will be inserted at the appriopriate place, populated with commits between that version's tag and the one before it. I.e. documenting a past release after it's git-tagged. If the version equals `0.0.1` or `1.0.0` and zero versions exist, then a [notice](https://common-changelog.org/#23notice) will be inserted (rather than commits) containing the text `:seedling: Initial release.`.
+If the (resulting) version is greater than the current version then commits will be taken from the semver-latest tag until HEAD. I.e. documenting a new release before it's git-tagged. If the version matches an existing tag then a release will be inserted at the appriopriate place, populated with commits between that version's tag and the one before it. I.e. documenting a past release after it's git-tagged. If the version equals `0.0.1`, `0.1.0` or `1.0.0` and zero versions exist, then a [notice](https://common-changelog.org/#23notice) will be inserted (rather than commits) containing the text `:seedling: Initial release.`.
 
 Works best on a linear git history. If `remark-common-changelog` encounters other tags in the commit range (which may happen if releases were made in parallel on other branches) it will stop there and not include further (older) commits.
 

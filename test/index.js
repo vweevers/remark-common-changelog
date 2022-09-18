@@ -35,7 +35,7 @@ test('fixes various', function (t) {
       `${file.path}:16:1-16:22: Release date must have format YYYY-MM-DD`,
 
       // TODO: write test
-      `${file.path}:3:1-3:42: Failed to get commits for release (3.0.0): Could not find v2.0.1.`
+      `${file.path}:3:1-3:42: Failed to get commits for release (3.0.0) (> v2.0.1 <= HEAD): Could not find v2.0.1.`
     ])
     t.end()
   })
@@ -169,91 +169,168 @@ test('lints uncategorized changes', function (t) {
   })
 })
 
-test('add prerelease', function (t) {
-  const options = {
-    fix: true,
-    add: 'prerelease',
-    Date: function () {
-      return new Date('2020-01-02')
+// Should work regardless of whether a package.json is present
+for (const withPackage of [true, false]) {
+  test(`add prerelease (withPackage: ${withPackage})`, function (t) {
+    const options = {
+      fix: true,
+      add: 'prerelease',
+      Date: function () {
+        return new Date('2020-01-02')
+      }
     }
-  }
 
-  const commits = [
-    { version: '1.0.0-rc.9' },
-    { message: 'Fix beep boop' }
-  ]
+    const commits = [
+      { version: '1.0.0-rc.9' },
+      { message: 'Fix beep boop' }
+    ]
 
-  run('10-add-input', '10-add-output', { options, commits }, (err, { file, actual, expected }) => {
-    t.ifError(err)
-    t.is(replaceCommitReferences(actual), expected)
-    t.same(file.messages.map(String), [
-      `${file.path}:1:1-1:1: Categorize the changes`
-    ])
-    t.end()
+    run('10-add-input', '10-add-output', { withPackage, options, commits }, (err, { file, actual, expected }) => {
+      t.ifError(err)
+      t.is(replaceCommitReferences(actual), expected)
+      t.same(file.messages.map(String), [
+        `${file.path}:1:1-1:1: Categorize the changes`
+      ])
+      t.end()
+    })
   })
-})
 
-test('add preexisting release', function (t) {
-  const options = {
-    fix: true,
-    add: '1.0.0-rc.9'
-  }
+  test(`add prerelease on older release line (withPackage: ${withPackage})`, function (t) {
+    const options = {
+      fix: true,
+      add: 'prerelease',
+      Date: function () {
+        return new Date('2020-01-02')
+      }
+    }
 
-  const commits = [
-    { version: '1.0.0-rc.8' },
-    { message: 'Prepare 1.0.0-rc.9' },
-    { version: '1.0.0-rc.9' },
-    { message: 'Prepare 1.0.0-rc.10' },
-    { version: '1.0.0-rc.10' }
-  ]
+    const commits = [
+      { version: '1.0.0-rc.9' },
+      { message: 'Fix beep boop' },
+      { branch: 'v2.x', message: 'Boop' },
+      { version: '2.0.0' },
+      { branch: 'main' }
+    ]
 
-  run('11-add-input', '11-add-output', { options, commits }, (err, { file, actual, expected }) => {
-    t.ifError(err)
-    t.is(replaceCommitReferences(actual), replaceDates(expected))
-    t.same(file.messages.map(String), [
-      `${file.path}:1:1-1:1: Categorize the changes`
-    ])
-    t.end()
+    run('10-add-input', '10-add-output', { withPackage, options, commits }, (err, { file, actual, expected }) => {
+      t.ifError(err)
+      t.is(replaceCommitReferences(actual), expected)
+      t.same(file.messages.map(String), [
+        `${file.path}:1:1-1:1: Categorize the changes`
+      ])
+      t.end()
+    })
   })
-})
+
+  test(`add preexisting release (withPackage: ${withPackage})`, function (t) {
+    const options = {
+      fix: true,
+      add: '1.0.0-rc.9'
+    }
+
+    const commits = [
+      { version: '1.0.0-rc.8' },
+      { message: 'Prepare 1.0.0-rc.9' },
+      { version: '1.0.0-rc.9' },
+      { message: 'Prepare 1.0.0-rc.10' },
+      { version: '1.0.0-rc.10' }
+    ]
+
+    run('11-add-input', '11-add-output', { withPackage, options, commits }, (err, { file, actual, expected }) => {
+      t.ifError(err)
+      t.is(replaceCommitReferences(actual), replaceDates(expected))
+      t.same(file.messages.map(String), [
+        `${file.path}:1:1-1:1: Categorize the changes`
+      ])
+      t.end()
+    })
+  })
+
+  for (const type of ['major', 'minor', 'patch']) {
+    test(`add initial ${type} release (withPackage: ${withPackage})`, function (t) {
+      const options = {
+        fix: true,
+        add: type,
+        Date: function () {
+          return new Date('2022-09-18')
+        }
+      }
+
+      // These should be ignored
+      const commits = [
+        { message: 'Beep' },
+        { message: 'Boop' }
+      ]
+
+      run('12-add-input', `12-add-output-${type}`, { withPackage, options, commits }, (err, { file, actual, expected }) => {
+        t.ifError(err)
+        t.is(replaceCommitReferences(actual), expected)
+        t.same(file.messages.map(String), [])
+        t.end()
+      })
+    })
+  }
+}
 
 function run (inputFixture, outputFixture, opts, test) {
   const cwd = tempy.directory()
   const inputFile = new URL('./fixture/' + inputFixture + '.md', import.meta.url)
   const outputFile = new URL('./fixture/' + outputFixture + '.md', import.meta.url)
   const pkgFile = path.join(cwd, 'package.json')
+  const dummyFile = path.join(cwd, 'dummy-file')
   const { options, commits } = opts
+  const withPackage = opts.withPackage !== false
+  const repository = 'https://github.com/test/test.git'
   const stdio = 'ignore'
 
   const pkg = {
     name: 'test',
     version: '0.0.0',
-    repository: 'https://github.com/test/test.git',
-    private: true,
-    _count: 0
+    repository,
+    private: true
   }
 
+  let count = 0
+
   execFileSync('git', ['init', '.'], { cwd, stdio })
-  fs.writeFileSync(pkgFile, JSON.stringify(pkg))
+  fs.writeFileSync(dummyFile, String(count))
+
+  if (withPackage) {
+    fs.writeFileSync(pkgFile, JSON.stringify(pkg))
+  } else {
+    // Without a package, git origin will be used to get repository
+    execFileSync('git', ['remote', 'add', 'origin', repository], { cwd, stdio })
+  }
 
   if (commits) {
     execFileSync('git', ['config', 'user.name', 'test user'], { cwd, stdio })
     execFileSync('git', ['config', 'user.email', 'test@localhost'], { cwd, stdio })
-    execFileSync('git', ['add', 'package.json'], { cwd, stdio })
+    execFileSync('git', ['add', 'dummy-file'], { cwd, stdio })
+    if (withPackage) execFileSync('git', ['add', 'package.json'], { cwd, stdio })
     execFileSync('git', ['commit', '-m', 'Initial'], { cwd, stdio })
 
-    for (const { message, version } of commits) {
+    for (const { message, version, branch } of commits) {
+      if (branch === 'main') {
+        execFileSync('git', ['checkout', branch], { cwd, stdio })
+      } else if (branch) {
+        execFileSync('git', ['checkout', '-b', branch], { cwd, stdio })
+      }
+
       if (message) {
-        pkg._count++
-        fs.writeFileSync(pkgFile, JSON.stringify(pkg))
+        fs.writeFileSync(dummyFile, String(++count))
         execFileSync('git', ['commit', '-am', message], { cwd, stdio })
-      } else if (version) {
-        pkg.version = version
-        fs.writeFileSync(pkgFile, JSON.stringify(pkg))
+      }
+
+      if (version) {
+        if (withPackage) {
+          pkg.version = version
+          fs.writeFileSync(pkgFile, JSON.stringify(pkg))
+        } else {
+          fs.writeFileSync(dummyFile, String(++count))
+        }
+
         execFileSync('git', ['commit', '-am', version], { cwd, stdio })
         execFileSync('git', ['tag', '-a', 'v' + version, '-m', 'v' + version], { cwd, stdio })
-      } else {
-        throw new Error('Invalid mock commit')
       }
     }
   }
