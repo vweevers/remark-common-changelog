@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.0] - 2022-09-18
+
+### Added
+
+- Support adding release to older release line ([`8661c44`](https://github.com/vweevers/remark-common-changelog/commit/8661c44), [`ddb844b`](https://github.com/vweevers/remark-common-changelog/commit/ddb844b)) (Vincent Weevers).
+
 ## [2.1.0] - 2022-01-28
 
 ### Added
@@ -47,6 +53,8 @@ _First stable release._
 ## [0.0.1] - 2021-11-12
 
 _:seedling: Initial release._
+
+[2.2.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.2.0
 
 [2.1.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.1.0
 
