@@ -292,7 +292,7 @@ function run (inputFixture, outputFixture, opts, test) {
 
   let count = 0
 
-  execFileSync('git', ['init', '.'], { cwd, stdio })
+  execFileSync('git', ['init', '-b', 'main', '.'], { cwd, stdio })
   fs.writeFileSync(dummyFile, String(count))
 
   if (withPackage) {
