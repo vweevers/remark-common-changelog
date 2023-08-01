@@ -20,7 +20,7 @@
     "read-closest-package": "^1.2.0",
     "semver": "^7.3.2",
     "unist-builder": "^3.0.0",
-    "unist-util-is": "^5.1.1"
+    "unist-util-is": "^6.0.0"
   },
   "devDependencies": {
     "depcheck": "^1.2.0",
