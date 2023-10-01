@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "depcheck": "^1.2.0",
-    "remark": "^14.0.1",
+    "remark": "^15.0.1",
     "standard": "^16.0.3",
     "tape": "^5.0.1",
     "tempy": "^2.0.0"
