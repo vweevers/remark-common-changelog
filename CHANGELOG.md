@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.0] - 2024-04-04
+
+### Added
+
+- Take structured information from git trailers ([#13](https://github.com/vweevers/remark-common-changelog/issues/13)) ([`e12611c`](https://github.com/vweevers/remark-common-changelog/commit/e12611c)) (Vincent Weevers).
+
 ## [2.2.0] - 2022-09-18
 
 ### Added
@@ -53,6 +59,8 @@ _First stable release._
 ## [0.0.1] - 2021-11-12
 
 _:seedling: Initial release._
+
+[2.3.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.3.0
 
 [2.2.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.2.0
 

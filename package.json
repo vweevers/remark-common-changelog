@@ -1,6 +1,6 @@
 {
   "name": "remark-common-changelog",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "description": "Lint or fix a changelog written in markdown, following Common Changelog.",
   "license": "MIT",
   "author": "Vincent Weevers",
