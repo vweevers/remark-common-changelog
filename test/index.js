@@ -270,6 +270,31 @@ for (const withPackage of [true, false]) {
       })
     })
   }
+
+  test(`add release with git trailers (withPackage: ${withPackage})`, function (t) {
+    const options = {
+      fix: true,
+      add: 'major',
+      Date: function () {
+        return new Date('2024-04-04')
+      }
+    }
+
+    const commits = [
+      { version: '1.0.0' },
+      { message: 'Fix vulnerability\nCategory: fix\nCVE-ID: CVE-2024-123\nReviewed-By: beep\nSigned-Off-By: boop' },
+      { message: 'Add calendar\nCategory: addition.\nFixes: #44\nRef: #45, #46\nRefs: #47' },
+      { message: 'Fix pastel colors\nCategory: fix\nCo-Authored-By: Alice <alice@example.com>' },
+      { message: 'Refactor controllers\nCategory: change\nNotice: Foo bar\n  baz.' }
+    ]
+
+    run('20-add-input', '20-add-output', { withPackage, options, commits }, (err, { file, actual, expected }) => {
+      t.ifError(err)
+      t.is(replaceCommitReferences(actual), expected)
+      t.same(file.messages.map(String), [])
+      t.end()
+    })
+  })
 }
 
 function run (inputFixture, outputFixture, opts, test) {

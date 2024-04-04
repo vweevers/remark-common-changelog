@@ -276,6 +276,7 @@ export default function attacher (opts) {
 
         // Add other types as a hint to categorize
         const insertEmpty = populate ? grouped[UNCATEGORIZED].length > 0 : true
+        const notice = []
 
         for (const type in grouped) {
           const changes = grouped[type]
@@ -288,7 +289,17 @@ export default function attacher (opts) {
 
           if (changes.length) {
             group.createList(changes)
+
+            for (const change of changes) {
+              if (change.notice) {
+                notice.push(change.notice)
+              }
+            }
           }
+        }
+
+        if (populate && notice.length > 0) {
+          release.createNotice(notice.map(sentence).join(' '))
         }
 
         if (!release.isEmpty()) return
@@ -468,4 +479,9 @@ function releaseDate (date) {
 
 function twoDigits (n) {
   return n < 10 ? `0${n}` : n
+}
+
+function sentence (str) {
+  str = str.trim()
+  return str.endsWith('.') ? str : str + '.'
 }
