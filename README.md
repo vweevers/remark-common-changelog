@@ -176,7 +176,32 @@ Options:
 
 If the (resulting) version is greater than the current version then commits will be taken from the semver-latest tag until HEAD. I.e. documenting a new release before it's git-tagged. If the version matches an existing tag then a release will be inserted at the appriopriate place, populated with commits between that version's tag and the one before it. I.e. documenting a past release after it's git-tagged. If the version equals `0.0.1`, `0.1.0` or `1.0.0` and zero versions exist, then a [notice](https://common-changelog.org/#23notice) will be inserted (rather than commits) containing the text `:seedling: Initial release.`.
 
-Works best on a linear git history. If `remark-common-changelog` encounters other tags in the commit range (which may happen if releases were made in parallel on other branches) it will stop there and not include further (older) commits.
+Works best on a linear git history without merge commits. If `remark-common-changelog` encounters other tags in the commit range it will stop there and not include further (older) commits.
+
+Git [trailers](https://git-scm.com/docs/git-interpret-trailers) ("lines that look similar to RFC 822 e-mail headers, at the end of the otherwise free-form part of a commit message") can provide structured information to the generated changelog. The following trailer keys are supported (case-insensitive):
+
+- `Category`: one of `change`, `addition`, `removal`, `fix`, or `none`. If `none` then the commit will be excluded from the changelog. If not present then the change will be listed under Uncategorized and will require manual categorization.
+- `Notice`: a [notice](https://common-changelog.org/#23-notice) for the release. If multiple commits contain a notice, they will be joined as sentences (i.e. ending with a dot) separated by a space.
+- `Ref`, `Refs`, `Fixes`, `Closes` or `CVE-ID`: a numeric reference in the form of `#N`, `PREFIX-N` or `CVE-N-N` where `N` is a number and `PREFIX` is at least 2 letters. For example `#123`, `GH-123`, `JIRA-123` or `CVE-2024-123`. Can be repeated, either with multiple trailer lines or by separating references with a comma - e.g. `Ref: #1, #2`. Non-numeric references are ignored.
+- `Co-Authored-By`: co-author in the form of `name <email>`. Can be repeated.
+
+For example, the following commit (which has Bob as git author, let's say):
+
+```
+Bump math-utils to 4.5.6
+
+Ref: JIRA-123
+Category: change
+Co-Authored-By: Alice <alice@example.com>
+```
+
+Turns into:
+
+```md
+## Changed
+
+- Bump math-utils to 4.5.6 (d23ba8f) (JIRA-123) (Bob, Alice)
+```
 
 ## Install
 
