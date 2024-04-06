@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.1] - 2024-04-06
+
+### Fixed
+
+- Speed up detection of tagged commits ([#14](https://github.com/vweevers/remark-common-changelog/issues/14)) ([`9312d96`](https://github.com/vweevers/remark-common-changelog/commit/9312d96)) (Vincent Weevers).
+
 ## [2.3.0] - 2024-04-04
 
 ### Added
@@ -59,6 +65,8 @@ _First stable release._
 ## [0.0.1] - 2021-11-12
 
 _:seedling: Initial release._
+
+[2.3.1]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.3.1
 
 [2.3.0]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.3.0
 
