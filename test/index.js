@@ -5,6 +5,7 @@ import { remark } from 'remark'
 import tempy from 'tempy'
 import { execFileSync } from 'child_process'
 import plugin from '../index.js'
+import versionCommitRe from '../lib/version-commit-re.js'
 
 test('lints various', function (t) {
   run('00-various-input', '00-various-input', { options: { fix: false } }, (err, { file, actual, expected }) => {
@@ -296,6 +297,29 @@ for (const withPackage of [true, false]) {
     })
   })
 }
+
+test('versionCommitRe', function (t) {
+  t.ok(versionCommitRe.test('3.3.0'))
+  t.ok(versionCommitRe.test('0.0.123'))
+  t.ok(versionCommitRe.test('3.3.0-rc.1.2.3.abc'))
+  t.ok(versionCommitRe.test('v3.3.0'))
+  t.ok(versionCommitRe.test('bump 3.3.0'))
+  t.ok(versionCommitRe.test('bumped 3.3.0'))
+  t.ok(versionCommitRe.test('Bumped v3.3.0'))
+  t.ok(versionCommitRe.test('chore: 3.3.0'))
+  t.ok(versionCommitRe.test('chore (release):3.3.0'))
+  t.ok(versionCommitRe.test('chore(release):3.3.0'))
+  t.ok(versionCommitRe.test('chore(release): v3.3.0'))
+
+  t.notOk(versionCommitRe.test(''))
+  t.notOk(versionCommitRe.test('a'))
+  t.notOk(versionCommitRe.test('x3.3.0'))
+  t.notOk(versionCommitRe.test('xbump 3.3.0'))
+  t.notOk(versionCommitRe.test('chore: foo'))
+  t.notOk(versionCommitRe.test('bump foo'))
+
+  t.end()
+})
 
 function run (inputFixture, outputFixture, opts, test) {
   const cwd = tempy.directory()
