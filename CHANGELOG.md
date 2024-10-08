@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.3.2] - 2024-10-08
+
+### Fixed
+
+- Fix commit and issue links for submodules ([`274a49d`](https://github.com/vweevers/remark-common-changelog/commit/274a49d)) (Vincent Weevers)
+- Don't copy commit description into changelog ([`869157d`](https://github.com/vweevers/remark-common-changelog/commit/869157d)) (Vincent Weevers)
+
 ## [2.3.1] - 2024-04-06
 
 ### Fixed
@@ -65,6 +72,8 @@ _First stable release._
 ## [0.0.1] - 2021-11-12
 
 _:seedling: Initial release._
+
+[2.3.2]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.3.2
 
 [2.3.1]: https://github.com/vweevers/remark-common-changelog/releases/tag/v2.3.1
 
