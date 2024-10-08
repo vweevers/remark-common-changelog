@@ -12,7 +12,7 @@
 
 ### Uncategorized
 
-- Fix beep boop (xxxxxxx) (test user)
+- Fix beep boop ([`xxxxxxx`](https://github.com/test/test/commit/xxxxxxx)) (test user)
 
 ## [1.0.0-rc.9] - 2020-01-01
 

@@ -18,7 +18,7 @@
 
 ### Uncategorized
 
-- Prepare 1.0.0-rc.9 (xxxxxxx) (test user)
+- Prepare 1.0.0-rc.9 ([`xxxxxxx`](https://github.com/test/test/commit/xxxxxxx)) (test user)
 
 ## [1.0.0-rc.8] - 2020-01-01
 

@@ -408,7 +408,10 @@ function run (inputFixture, outputFixture, opts, test) {
 }
 
 function replaceCommitReferences (str) {
-  return str.replace(/\([a-z0-9]{7}\)/g, '(xxxxxxx)')
+  return str
+    .replace(/\([a-z0-9]{7}\)/g, '(xxxxxxx)')
+    .replace(/\[`[a-z0-9]{7}`\]/g, '[`xxxxxxx`]')
+    .replace(/commit\/[a-z0-9]{7}/g, 'commit/xxxxxxx')
 }
 
 function replaceDates (str) {
