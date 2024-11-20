@@ -19,7 +19,7 @@
     "isomorphic-git": "^1.7.8",
     "read-closest-package": "^1.2.0",
     "semver": "^7.3.2",
-    "unist-builder": "^3.0.0",
+    "unist-builder": "^4.0.0",
     "unist-util-is": "^5.1.1"
   },
   "devDependencies": {
